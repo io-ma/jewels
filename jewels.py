@@ -130,7 +130,9 @@ class MyGame(arcade.Window):
 
     def match(self):
         matches = []
-        matches.append(cell) for cell in self.grid[row] if cell == cell.next()
+        for cell in self.grid[row]:
+            if cell == cell.next():
+                matches.append(cell)
         return matches
 
     def setup(self):
@@ -218,7 +220,7 @@ class MyGame(arcade.Window):
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         #self.match_gems()
-        print(f"matches in self.match are: {self.match()}")
+        print(self.match)
         arcade.finish_render()
 
 
