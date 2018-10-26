@@ -64,7 +64,7 @@ class Player(object):
         # vertical or horizontal
         # we have 16 vertical possible combos
         # and 12 horizontal possible combos
-        # a total of 28 possbile combos
+        # a total of 28 possible combos
         #
     # 4 gems - 40 points
         # vertical or horizontal
@@ -90,148 +90,102 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "JEWELS")
         # 2 dimensional list
         self.grid = []
-        gem = Gem()
-        self.match = []
-        self.matcher = {}
-        for row in range(ROW_COUNT):
-            # Add an empty list  that will hold each cell
-            # in this row
-            self.grid.append([])
-            for column in range(COLUMN_COUNT):
-                self.cell = gem.set_gem_color()
-                self.grid[row].append(self.cell) # Append a cell
-                self.match.append(self.cell)
-        print(f"self.match is: {self.match}")
-        #self.matcher = Counter(self.match)
-        #print(self.matcher)
-        #print(f"self.grid[row] is: {self.grid[row]}")
-        """for x in self.matcher:
-            print(f"cell is: {x}")
-            if x in self.grid[row]:
-                print(f"x index: {self.grid[row].index(x)}")
-            else:
-                print("Not in this row")"""
-
-        self.white_list = None
-        self.violet_list = None
-        self.blue_list = None
-        self.green_list = None
-        self.yellow_list = None
-        self.red_list = None
-        self.gems = None
-        print(self.grid)
-        # Set up the player info
-        # self.score = 0
-
+        self.gem = Gem()
+        #player = Player()
+        self.score = 0
         # Show the mouse cursor
         self.set_mouse_visible(True)
 
         arcade.set_background_color((119, 107, 136))
 
-    def match(self):
-        matches = []
-        for cell in self.grid[row]:
-            if cell == cell.next():
-                matches.append(cell)
-        return matches
-
     def setup(self):
         """ Set up the game and initialize the variables. """
-        # Sprite lists
-        # self.gem_list = arcade.SpriteList()
-
         # Score logic will go here
-        self.score = 0
 
-        self.white_list = arcade.SpriteList()
-        self.violet_list = arcade.SpriteList()
-        self.blue_list = arcade.SpriteList()
-        self.green_list = arcade.SpriteList()
-        self.yellow_list = arcade.SpriteList()
-        self.red_list = arcade.SpriteList()
+        #sprite list
+        self.gem_sprite_list = arcade.SpriteList()
 
-        # Create the gems
-        #for i in range(self.GEM_COUNT):
+        for row in range(ROW_COUNT):
+            # Add an empty list  that will hold each cell
+            # in this row
+            self.grid.append([])
+            for column in range(COLUMN_COUNT):
 
-        # Create the gem instance
-        white = Gem("images/gems/white.png", SPRITE_SCALING_GEM)
-        red = Gem("images/gems/red.png", SPRITE_SCALING_GEM)
-        blue = Gem("images/gems/blue.png", SPRITE_SCALING_GEM)
-        green = Gem("images/gems/green.png", SPRITE_SCALING_GEM)
-        yellow = Gem("images/gems/yellow.png", SPRITE_SCALING_GEM)
-        violet = Gem("images/gems/violet.png", SPRITE_SCALING_GEM)
+                x = 250 + (MARGIN + CELL_WIDTH) * column + MARGIN + CELL_WIDTH // 2
+                y = 250 + (MARGIN + CELL_HEIGHT) * row + MARGIN + CELL_HEIGHT // 2
 
-        # I have to implement this better!
-        self.violet_list.append(violet)
-        self.red_list.append(red)
-        self.blue_list.append(blue)
-        self.green_list.append(green)
-        self.yellow_list.append(yellow)
-        self.white_list.append(white)
-        self.gems = [self.white_list, self.violet_list, self.red_list, self.blue_list, self.yellow_list, self.green_list]
+                cell = self.gem.set_gem_color()
+
+                if cell == 0:
+                    gem_sprite = Gem("images/gems/white.png", SPRITE_SCALING_GEM)
+                elif cell == 1:
+                    gem_sprite = Gem("images/gems/violet.png", SPRITE_SCALING_GEM)
+                elif cell == 2:
+                    gem_sprite = Gem("images/gems/green.png", SPRITE_SCALING_GEM)
+                elif cell == 3:
+                    gem_sprite = Gem("images/gems/blue.png", SPRITE_SCALING_GEM)
+                elif cell == 4:
+                    gem_sprite = Gem("images/gems/yellow.png", SPRITE_SCALING_GEM)
+                elif cell == 5:
+                    gem_sprite = Gem("images/gems/red.png", SPRITE_SCALING_GEM)
+                print(type(gem_sprite))
+
+                gem_sprite.cell = cell
+                gem_sprite.center_x = x
+                gem_sprite.center_y = y
+
+                self.grid[row].append(gem_sprite) # Append a cell
+                self.gem_sprite_list.append(gem_sprite)
 
 
-    def position_gems(self,gem_list,row, column):
-        # Position the gem
-        """self.set_gem_color()"""
-        for gem in gem_list:
-            gem.center_x = 250 + (MARGIN + CELL_WIDTH) * column + MARGIN + CELL_WIDTH // 2
-            gem.center_y = 250 + (MARGIN + CELL_HEIGHT) * row + MARGIN + CELL_HEIGHT // 2
+    def match_gems(self):
+       # Check for horizontal matches
+        result = []
+        match_count = 0
+        for row in range(len(self.grid)):
+            cell_type = -1
+            for column in range(len(self.grid[0])):
+                sprite = self.grid[row][column]
+                if sprite.cell == cell_type:
+                    match_count += 1
+                else:
+                    if match_count >= 3:
+                        result.append(f"Match of {match_count} on row {row} from column {column - match_count}, {column - 1}")
+                    cell_type = sprite.cell
+                    match_count = 1
+                print(sprite.cell, end=" ")
 
-    """def match_gems(self):
-        match = [self.grid[row][column]]
-        print(Counter(match))"""
+            if match_count >= 3:
+                result.append(f"Match of {match_count} on row {row} from column {column - match_count + 1}, {column}")
+
+            print()
+
+        print(result)
+        print()
 
 
     def on_draw(self):
         """ Draws the game """
         arcade.start_render()
 
-        # Draw the grid
-        # Draw the box
+        # draw grid
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
-                color = (82, 73, 93)
-
-                # Figure out where the cell is
                 x = 250 + (MARGIN + CELL_WIDTH) * column + MARGIN + CELL_WIDTH // 2
                 y = 250 + (MARGIN + CELL_HEIGHT) * row + MARGIN + CELL_HEIGHT // 2
-
+                color = (82, 73, 93)
                 arcade.draw_rectangle_filled(x, y, CELL_WIDTH, CELL_HEIGHT, color)
 
-                #THIS NEEDS more thinking
-                # Position the gem
-                for gem_list in self.gems:
-                    self.position_gems(gem_list, row, column)
-                if self.grid[row][column] == 0:
-                    self.white_list.draw()
-                elif self.grid[row][column] == 1:
-                    self.violet_list.draw()
-                elif self.grid[row][column] == 2:
-                    self.green_list.draw()
-                elif self.grid[row][column] == 3:
-                    self.blue_list.draw()
-                elif self.grid[row][column] == 4:
-                    self.yellow_list.draw()
-                else:
-                    self.red_list.draw()
-
+        # draw gems 
+        self.gem_sprite_list.draw()
 
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
-        #self.match_gems()
-        print(self.match)
-        arcade.finish_render()
+
 
 
     def update(self, delta_time):
-        # updates the gem list as time passes
-        self.white_list.update()
-        self.violet_list.update()
-        self.blue_list.update()
-        self.yellow_list.update()
-        self.green_list.update()
-        self.red_list.update()
+        self.match_gems()
 
 
 
