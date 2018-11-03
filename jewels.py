@@ -111,6 +111,7 @@ class MyGame(arcade.Window):
 
         #create sprite list
         self.gem_sprite_list = arcade.SpriteList()
+        self.score = 0
 
         # initialize gems, establish their position
         for row in range(len(self.grid)):
@@ -153,7 +154,7 @@ class MyGame(arcade.Window):
         #print()
         return match
 
-    def change_gems(self):
+    def set_score(self):
         if self.match_gems() == 3:
             self.score += 15
         elif self.match_gems() == 4:
@@ -183,6 +184,7 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         self.match_gems()
+        self.set_score()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
