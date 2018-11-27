@@ -148,6 +148,11 @@ class MyGame(arcade.Window):
             if match_count >= 3:
                 result.append(f"Match of {match_count} on row {row} from column {col - match_count + 1}, {col}")
 
+            # if match == 3, return row, column
+            # explode the matching gems
+            # replace them with random gems
+            # check for matching gems again
+
             #print()
 
         #print(result)
@@ -184,7 +189,7 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         self.match_gems()
-        self.set_score()
+        #self.set_score()
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -206,6 +211,7 @@ def main():
     """ Main method """
     window = MyGame()
     window.setup()
+    window.set_score()
     arcade.run()
 
 if __name__ == "__main__":
