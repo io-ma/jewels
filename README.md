@@ -1,10 +1,5 @@
-## How to contribute:
-
-Let's have fun!
-
-1. If you want to contribute please tell me so I can add you to the repo, as a maintainer
-2. Fork the repo, do your changes, git add them, commit and push 
-3. Create a pull request
+## Stage of the game:
+🐣
 
 ## About arcade:
 
